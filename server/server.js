@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 
 const newMessage = (userID, name, message, messageID) => ({
   userID, name, message, messageID,

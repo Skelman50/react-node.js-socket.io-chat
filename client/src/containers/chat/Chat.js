@@ -22,19 +22,15 @@ class Chat extends Component {
 
 
   componentWillMount = () => {
-    const { search } = this.props.location;
-    this.searchParams(search);
-
     this.socket.on('connect', () => {
       console.log('client connect');
     });
+    const { search } = this.props.location;
+    this.searchParams(search);
   }
 
   componentDidMount = () => {
-    setTimeout(() => {
       this.joinNewUser();
-    },250)
-    
   }
 
   searchParams = (location) => {
