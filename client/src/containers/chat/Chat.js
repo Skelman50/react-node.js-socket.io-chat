@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-
+import io from 'socket.io-client';
 import ChatContent from '../../components/chat-content/ChatContent';
 import ChatActions from '../../components/chat-actions/ChatActions';
 
 
 class Chat extends Component {
+    socket = io();
 
     messagesRef = React.createRef();
 
@@ -22,18 +23,19 @@ class Chat extends Component {
   componentWillMount = () => {
     const { search } = this.props.location;
     this.searchParams(search);
+    this.socket.on('connect', () => {
+      console.log('client connect');
+    });
   }
 
   componentDidMount = () => {
-    setTimeout(() => {
       this.joinNewUser();
-    }, 500) 
   }
 
   searchParams = (location) => {
     const params = location.split('&');
-    const name = params[0].split('=')[1];
-    const room = params[1].split('=')[1];
+    const name = decodeURIComponent(params[0].split('=')[1]);
+    const room = decodeURIComponent(params[1].split('=')[1]);
     this.initializeParams(name, room);
   }
 
@@ -43,20 +45,18 @@ class Chat extends Component {
 
   joinNewUser = () => {
     const { name, room } = this.state;
-    const { socket } = this.props
-    socket.emit('join', { name, room }, (data) => {
+    this.socket.emit('join', { name, room }, (data) => {
       this.setState({ id: data.userID });
       this.initializideMessage();
     });
   }
 
   initializideMessage = () => {
-    const { socket } = this.props
-    socket.on('usersUpdate', (users) => {
+    this.socket.on('usersUpdate', (users) => {
       this.setState({ users });
     });
 
-    socket.on('newMessage', (data) => {
+    this.socket.on('newMessage', (data) => {
       const { message, messageID, name } = data;
       this.addNewMessage({ message, messageID, name });
       const { current } = this.messagesRef;
@@ -83,14 +83,13 @@ class Chat extends Component {
 
 
   render() {
-    const { socket } = this.props
     return (
       <div id="actions">
         <ChatContent {...this.state} {...this.props} messagesRef={this.messagesRef} />
         <ChatActions
           {...this.state}
           resetMessage={this.resetMessage}
-          socket={socket}
+          socket={this.socket}
         />
       </div>
     );
