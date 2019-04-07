@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import io from 'socket.io-client';
+
 import ChatContent from '../../components/chat-content/ChatContent';
 import ChatActions from '../../components/chat-actions/ChatActions';
 
 
 class Chat extends Component {
-
-    socket = io();
 
     messagesRef = React.createRef();
 
@@ -22,9 +20,6 @@ class Chat extends Component {
 
 
   componentWillMount = () => {
-    this.socket.on('connect', () => {
-      console.log('client connect');
-    });
     const { search } = this.props.location;
     this.searchParams(search);
   }
@@ -46,18 +41,20 @@ class Chat extends Component {
 
   joinNewUser = () => {
     const { name, room } = this.state;
-    this.socket.emit('join', { name, room }, (data) => {
+    const { socket } = this.props
+    socket.emit('join', { name, room }, (data) => {
       this.setState({ id: data.userID });
       this.initializideMessage();
     });
   }
 
   initializideMessage = () => {
-    this.socket.on('usersUpdate', (users) => {
+    const { socket } = this.props
+    socket.on('usersUpdate', (users) => {
       this.setState({ users });
     });
 
-    this.socket.on('newMessage', (data) => {
+    socket.on('newMessage', (data) => {
       const { message, messageID, name } = data;
       this.addNewMessage({ message, messageID, name });
       const { current } = this.messagesRef;
@@ -84,13 +81,14 @@ class Chat extends Component {
 
 
   render() {
+    const { socket } = this.props
     return (
       <div id="actions">
         <ChatContent {...this.state} {...this.props} messagesRef={this.messagesRef} />
         <ChatActions
           {...this.state}
           resetMessage={this.resetMessage}
-          socket={this.socket}
+          socket={socket}
         />
       </div>
     );
