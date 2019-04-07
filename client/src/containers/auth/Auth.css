@@ -1,0 +1,9 @@
+.auth {
+    display: flex;
+    padding-top: 50px;
+    justify-content: center;
+}
+
+.auth .card {
+    width: 400px;
+}

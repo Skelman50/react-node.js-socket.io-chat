@@ -1,0 +1,11 @@
+.chat-users {
+    width: 300px;
+    border: 1px solid #e0e0e0;
+    margin: 0;
+}
+
+
+
+.collection-item {
+    cursor: pointer;
+}
