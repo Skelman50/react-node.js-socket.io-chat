@@ -24,6 +24,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('join', (user, callback) => {
+    
     callback({ userID: socket.id });
 
     socket.join(user.room);

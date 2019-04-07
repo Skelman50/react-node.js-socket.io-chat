@@ -25,7 +25,9 @@ class Chat extends Component {
   }
 
   componentDidMount = () => {
+    setTimeout(() => {
       this.joinNewUser();
+    }, 500) 
   }
 
   searchParams = (location) => {
