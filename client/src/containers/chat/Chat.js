@@ -5,7 +5,7 @@ import ChatActions from '../../components/chat-actions/ChatActions';
 
 
 class Chat extends Component {
-    socket = io();
+    socket = io('http://localhost:4040');
 
     messagesRef = React.createRef();
 
