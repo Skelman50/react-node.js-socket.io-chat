@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
   });
 });
 
-
+if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
   app.get('*', (req, res) => {
     res.sendFile(
@@ -62,6 +62,7 @@ io.on('connection', (socket) => {
       ),
     );
   });
+}
 
 
 server.listen(PORT, () => {
